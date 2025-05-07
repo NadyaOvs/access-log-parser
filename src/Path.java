@@ -27,7 +27,7 @@ public class Path {
 
             int lineCount = 0;
             int maxLength = 0;
-            int minLength = Integer.MAX_VALUE; // Инициализируем максимальным значением
+            int minLength = Integer.MAX_VALUE;
 
             try {
                 FileReader fileReader = new FileReader(path);
