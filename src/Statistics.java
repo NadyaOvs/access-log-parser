@@ -17,7 +17,7 @@ public class Statistics {
         totalTraffic += logEntry.getResponseSize();
 
 
-        LocalDateTime entryTime = logEntry.getTimestamp();
+        LocalDateTime entryTime = LocalDateTime.from(logEntry.getTimestamp());
         if (minTime == null || entryTime.isBefore(minTime)) {
             minTime = entryTime;
         }

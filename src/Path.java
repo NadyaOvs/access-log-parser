@@ -19,6 +19,7 @@ public class Path {
             System.out.println("Путь указан верно");
             count++;
             System.out.println("Это файл номер " + count);
+            Statistics statistics = new Statistics();
 
             int googlebotCount = 0;
             int yandexbotCount = 0;
@@ -35,6 +36,8 @@ public class Path {
                     lineCount++;
 
                     String userAgent = line;
+                    LogEntry logEntry = new LogEntry(line);
+                    statistics.addEntry(logEntry);
 
                     int startIndex = userAgent.indexOf("(");
                     int endIndex = userAgent.indexOf(")");
