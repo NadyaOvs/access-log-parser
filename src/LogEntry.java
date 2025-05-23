@@ -1,15 +1,9 @@
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
-import java.time.format.ResolverStyle;
-import java.util.List;
 import java.util.Locale;
-
-import static java.util.Locale.ENGLISH;
+import java.util.Objects;
 
 public class LogEntry {
     private final String ipAddress;          // IP-адрес
@@ -20,6 +14,7 @@ public class LogEntry {
     private final long responseSize;          // Размер отданных сервером данных
     private final String referer;             // Referer
     private final UserAgent userAgent;           // User-Agent
+
 
     // Конструктор, принимающий строку
     public LogEntry(String logLine) {
@@ -53,6 +48,19 @@ public class LogEntry {
         this.referer = "-".equals(refer) ? null : refer;
         String userAgentInfo = split[4].replaceAll("\"", "");
         this.userAgent = "-".equals(userAgentInfo) ? null : new UserAgent(userAgentInfo);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LogEntry logEntry = (LogEntry) o;
+        return responseCode == logEntry.responseCode && responseSize == logEntry.responseSize && Objects.equals(ipAddress, logEntry.ipAddress) && Objects.equals(timestamp, logEntry.timestamp) && httpMethod == logEntry.httpMethod && Objects.equals(requestPath, logEntry.requestPath) && Objects.equals(referer, logEntry.referer) && Objects.equals(userAgent, logEntry.userAgent);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ipAddress, timestamp, httpMethod, requestPath, responseCode, responseSize, referer, userAgent);
     }
 
     // Геттеры

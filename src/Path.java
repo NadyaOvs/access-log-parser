@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Path {
@@ -21,6 +22,9 @@ public class Path {
             System.out.println("Это файл номер " + count);
             Statistics statistics = new Statistics();
 
+
+
+
             int googlebotCount = 0;
             int yandexbotCount = 0;
 
@@ -35,15 +39,22 @@ public class Path {
 
                     lineCount++;
 
-                    String userAgent = line;
+
                     LogEntry logEntry = new LogEntry(line);
                     statistics.addEntry(logEntry);
 
-                    int startIndex = userAgent.indexOf("(");
-                    int endIndex = userAgent.indexOf(")");
+                    // Вызываем метод getExistingPages
+
+                    //statistics.getExistingPages(logEntry);
+                    // Дополнительно можно вывести все существующие страницы
+                    statistics.getExistingPages(logEntry);
+                    statistics.getOsStatistics();
+
+                    int startIndex = line.indexOf("(");
+                    int endIndex = line.indexOf(")");
 
                     if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
-                        String firstBrackets = userAgent.substring(startIndex + 1, endIndex);
+                        String firstBrackets = line.substring(startIndex + 1, endIndex);
                         String[] parts = firstBrackets.split(";");
                         if (parts.length >= 2) {
                             String fragment = parts[1].trim();
