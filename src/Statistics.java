@@ -9,8 +9,11 @@ public class Statistics {
     private LocalDateTime maxTime;
 
     private final HashSet<String> existingPages = new HashSet<>();
+    private final HashSet<String> nonexistent = new HashSet<>();
     private final HashMap<String, Integer> osFrequency = new HashMap<>();
+    private final HashMap<String, Integer> browserFrequency = new HashMap<>();
     private int totalOsCount = 0;
+    private int totalBrowserCount = 0;
 
 
     public Statistics() {
@@ -22,7 +25,6 @@ public class Statistics {
 
     public void addEntry(LogEntry logEntry) {
         totalTraffic += logEntry.getResponseSize();
-
 
         LocalDateTime entryTime = LocalDateTime.from(logEntry.getTimestamp());
         if (minTime == null || entryTime.isBefore(minTime)) {
@@ -39,18 +41,31 @@ public class Statistics {
             osFrequency.put(os, osFrequency.getOrDefault(os, 0) + 1);
             totalOsCount++;
         }
-    }
-    //метод по добавлению существующих сайтов в множество
-    public HashSet<String> getExistingPages(LogEntry logEntry) {
+        // Подсчитываем частоту браузеров
+        if (userAgent != null) {
+            String browser = userAgent.getBrowser();
+            browserFrequency.put(browser, browserFrequency.getOrDefault(browser, 0) + 1);
+            totalBrowserCount++;
+        }
+
         // Добавляем адреса страниц с кодом ответа 200
         if (logEntry.getResponseCode() == 200) {
             existingPages.add(logEntry.getReferer());
         }
-//            System.out.println(page);
-//        }
-        return existingPages;
+
+        // Добавляем несуществующие адреса страниц с кодом ответа 404
+        if (logEntry.getResponseCode() == 404) {
+            nonexistent.add(logEntry.getReferer());
+        }
     }
 
+    public HashSet<String> getExistingPages() {
+        return existingPages;
+    }
+    public HashSet<String> getNonexistentPages() {
+        return nonexistent;
+    }
+//	Статистика операционных систем
     public HashMap<String, Double> getOsStatistics() {
         HashMap<String, Double> osStatistics = new HashMap<>();
         for (Map.Entry<String, Integer> entry : osFrequency.entrySet()) {
@@ -61,7 +76,17 @@ public class Statistics {
         }
         return osStatistics;
     }
-
+    // Статистика браузера
+    public HashMap<String, Double> getBrowserStatistics() {
+        HashMap<String, Double> browserStatistics = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : browserFrequency.entrySet()) {
+            String os = entry.getKey();
+            int count = entry.getValue();
+            double proportion = (double) count / totalOsCount;
+            browserStatistics.put(os, proportion);
+        }
+        return browserStatistics;
+    }
 
     public double getTrafficRate() {
         if (minTime == null || maxTime == null || minTime.isEqual(maxTime)) {

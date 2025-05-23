@@ -23,8 +23,6 @@ public class Path {
             Statistics statistics = new Statistics();
 
 
-
-
             int googlebotCount = 0;
             int yandexbotCount = 0;
 
@@ -43,12 +41,11 @@ public class Path {
                     LogEntry logEntry = new LogEntry(line);
                     statistics.addEntry(logEntry);
 
-                    // Вызываем метод getExistingPages
-
-                    //statistics.getExistingPages(logEntry);
-                    // Дополнительно можно вывести все существующие страницы
-                    statistics.getExistingPages(logEntry);
+                    // Вызываем метод getExistingPages и getOsStatistics
+                    statistics.getExistingPages();
                     statistics.getOsStatistics();
+                    statistics.getNonexistentPages();
+                    statistics.getBrowserStatistics();
 
                     int startIndex = line.indexOf("(");
                     int endIndex = line.indexOf(")");
@@ -97,7 +94,6 @@ public class Path {
         }
     }
 }
-
 
 
 //C:\Users\1\Desktop\StepUp\access.log
